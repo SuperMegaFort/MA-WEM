@@ -12,16 +12,16 @@ ITEM_PIPELINES = {
 }
 
 # Configuration d'Elasticsearch
-ELASTICSEARCH_SERVER = 'http://localhost:9200'  # L'URL de ton serveur Elasticsearch
-ELASTICSEARCH_INDEX = 'wikipedia_index'  # Le nom de l'index à créer
+ELASTICSEARCH_SERVER = 'http://localhost:9200'  # L'URL pour accéder à Elasticsearch
+ELASTICSEARCH_INDEX = 'wikipedia_index'  # Nom de l'index Elasticsearch
 
 # Pour éviter le bannissement
 DOWNLOAD_DELAY = 1  # Délai d'au moins 1 seconde entre les requêtes
-USER_AGENT = 'HEG-WebMining-Bot (ton_email@example.com)'  # Remplace par une adresse email VALIDE
+#USER_AGENT = 'HEG-WebMining-Bot (ton_email@example.com)'  Ps obligatoire
 
-# Limite le nombre de pages pour éviter un crawl infini (important !)
-CLOSESPIDER_PAGECOUNT = 100  # Arrête après 100 pages (à ajuster)
-DEPTH_LIMIT = 5  # Limite la profondeur du crawling (à ajuster)
+# Limite le nombre de pages pour éviter un crawl infini 
+CLOSESPIDER_PAGECOUNT = 100  
+DEPTH_LIMIT = 5  
 
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"

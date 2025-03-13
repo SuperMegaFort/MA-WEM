@@ -1,4 +1,4 @@
-from elasticsearch import Elasticsearch, ApiError, NotFoundError, ConnectionError  # CORRIGÉ: Importations
+from elasticsearch import Elasticsearch, ApiError, NotFoundError, ConnectionError  
 from itemadapter import ItemAdapter
 from dateutil import parser  
 
@@ -68,17 +68,17 @@ class ElasticsearchPipeline:
         if self.es:
             adapter = ItemAdapter(item)
             try:
-                # Transformation de datePublished (si présent)
+                # Transformation de datePublished (
                 if 'structured_data' in adapter and 'datePublished' in adapter['structured_data']:
                     date_str = adapter['structured_data']['datePublished']
                     parsed_date = parser.parse(date_str)  # Parse la date
-                    adapter['structured_data']['datePublished'] = parsed_date.isoformat()  # Format ISO 8601
+                    adapter['structured_data']['datePublished'] = parsed_date.isoformat() # Convertit en ISO 8601
             except (ValueError, TypeError):
                 pass
 
             try:
                 self.es.index(index=self.elastic_index, document=adapter.asdict())
-            except ApiError as e:  # CORRIGÉ: Utilise ApiError
+            except ApiError as e:  # CORRIGÉ: Utilise ApiError / sinon erreur
                 print(f"ERREUR Elasticsearch (process_item): {e}")
                 # Gérer l'erreur (logger, réessayer, etc.)
 

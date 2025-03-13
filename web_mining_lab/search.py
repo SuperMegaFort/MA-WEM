@@ -33,15 +33,15 @@ def rechercher(query_text, elastic_server='http://localhost:9200', elastic_index
 
     # Exécution de la requête
     results = es.search(index=elastic_index, body=query)
-    es.close() # Ferme la connection ici
-    return results #Retourne les resultats
+    es.close() 
+    return results 
 
 if __name__ == "__main__":
     recherche_terme = input("Entrez votre recherche : ")
     page_size = 10  # Nombre de résultats par page
     page_num = 0    # Page actuelle (commence à 0)
 
-    while True: # Boucle pour la pagination
+    while True: # Boucle pour afficher les résultats par page
         results = rechercher(recherche_terme, from_result=page_num * page_size, size=page_size)
          # Traitement et affichage des résultats
         print(f"Nombre total de résultats : {results['hits']['total']['value']}")
@@ -52,19 +52,18 @@ if __name__ == "__main__":
             print(f"Titre: {hit['_source'].get('titre', '')}")
             print(f"Date de publication: {hit['_source'].get('structured_data', {}).get('datePublished', '')}")
             print(f"URL: {hit['_source']['url']}")
-            #print(f"Résumé: {hit['_source'].get('resume', '')}")
-
-            #print(f"Image: {hit['_source'].get('og_image', '')}")
+            #print(f"Contenu: {hit['_source'].get('contenu', '')}") (ne fonctionne pas)
+            #print(f"Résumé: {hit['_source'].get('resume', '')}")   (ne fonctionne pas)
+            #print(f"Image: {hit['_source'].get('og_image', '')}")  (ne fonctionne pas)
 
             print(f"Description Open Graph: {hit['_source'].get('og_description', '')}")
 
-            # Tu peux afficher d'autres champs ici si tu veux
 
-        if (page_num + 1) * page_size >= results['hits']['total']['value'] : # Pas d'autres pages:
+        if (page_num + 1) * page_size >= results['hits']['total']['value'] : 
             break
 
         reponse = input("\nAfficher la page suivante ? (o/n) : ").lower()
         if reponse != 'o':
             break
 
-        page_num += 1 # Augmente le numéro de page
+        page_num += 1 
