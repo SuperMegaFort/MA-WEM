@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch
 
-def rechercher(query_text, elastic_server='http://localhost:9200', elastic_index='mon_index', from_result=0, size=10):
+def rechercher(query_text, elastic_server='http://localhost:9200', elastic_index='wikipedia_index', from_result=0, size=10):
     es = Elasticsearch(elastic_server)
 
     # Construction de la requête Elasticsearch
@@ -33,20 +33,8 @@ def rechercher(query_text, elastic_server='http://localhost:9200', elastic_index
 
     # Exécution de la requête
     results = es.search(index=elastic_index, body=query)
-
-    # Traitement et affichage des résultats
-    print(f"Nombre total de résultats : {results['hits']['total']['value']}")
-    print(f"Résultats {from_result + 1} à {min(from_result + size, results['hits']['total']['value'])} :")
-
-    for hit in results['hits']['hits']:
-        print(f"\nScore: {hit['_score']}")
-        print(f"Titre: {hit['_source'].get('titre', '')}")
-        print(f"URL: {hit['_source']['url']}")
-        print(f"Résumé: {hit['_source'].get('resume', '')}")
-        # Tu peux afficher d'autres champs ici si tu veux
-
-    es.close()
-    return results
+    es.close() # Ferme la connection ici
+    return results #Retourne les resultats
 
 if __name__ == "__main__":
     recherche_terme = input("Entrez votre recherche : ")
@@ -55,9 +43,25 @@ if __name__ == "__main__":
 
     while True: # Boucle pour la pagination
         results = rechercher(recherche_terme, from_result=page_num * page_size, size=page_size)
+         # Traitement et affichage des résultats
+        print(f"Nombre total de résultats : {results['hits']['total']['value']}")
+        print(f"Résultats {page_num * page_size + 1} à {min((page_num + 1) * page_size, results['hits']['total']['value'])} :")
 
-        if not results['hits']['hits']: # Pas d'autres pages
-             break
+        for hit in results['hits']['hits']:
+            print(f"\nScore: {hit['_score']}")
+            print(f"Titre: {hit['_source'].get('titre', '')}")
+            print(f"Date de publication: {hit['_source'].get('structured_data', {}).get('datePublished', '')}")
+            print(f"URL: {hit['_source']['url']}")
+            #print(f"Résumé: {hit['_source'].get('resume', '')}")
+
+            #print(f"Image: {hit['_source'].get('og_image', '')}")
+
+            print(f"Description Open Graph: {hit['_source'].get('og_description', '')}")
+
+            # Tu peux afficher d'autres champs ici si tu veux
+
+        if (page_num + 1) * page_size >= results['hits']['total']['value'] : # Pas d'autres pages:
+            break
 
         reponse = input("\nAfficher la page suivante ? (o/n) : ").lower()
         if reponse != 'o':
